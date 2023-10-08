@@ -325,6 +325,7 @@ func main() {
 
 	initCtx, cancelInit := context.WithCancel(ctx)
 	server := &reproxy.Server{
+		Address:                   *serverAddr,
 		FileMetadataStore:         st,
 		LocalPool:                 reproxy.NewLocalPool(exec, resMgr),
 		KeepLastRecords:           *keepRecords,

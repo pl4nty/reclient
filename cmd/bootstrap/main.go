@@ -329,7 +329,27 @@ func bootstrapReproxy(args []string, startTime time.Time) (string, int) {
 		}
 		return defaultErr, status.ExitStatus()
 	}
-	return "Proxy started successfully.\n", 0
+	return "Proxy started successfully.\n" + readFileWaitEmpty(filepath.Join(*outputDir, bootstrap.OEFile), time.Second), 0
+}
+
+// Dirty hack to give reproxy time to write to the file.
+func readFileWaitEmpty(fname string, maxWait time.Duration) string {
+	maxTicks := maxWait.Milliseconds() / 100
+	ticker := time.NewTicker(100 * time.Millisecond)
+	for _ = range ticker.C {
+		maxTicks--
+		if maxTicks < 0 {
+			break
+		}
+		b, err := os.ReadFile(fname)
+		if err != nil {
+			log.Exitf("Failed to read %s", fname)
+		}
+		if len(b) > 0 {
+			return string(b)
+		}
+	}
+	return ""
 }
 
 func authMechanism() auth.Mechanism {

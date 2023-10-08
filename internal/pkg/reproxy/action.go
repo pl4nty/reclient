@@ -71,7 +71,7 @@ type action struct {
 	forecast               *Forecast
 	lbls                   map[string]string
 	toolchainInputs        []string
-	oe                     outerr.OutErr
+	oe                     *outerr.RecordingOutErr
 	fallbackOE             outerr.OutErr
 	fallbackExitCode       int
 	fallbackResultStatus   command.ResultStatus
@@ -159,6 +159,7 @@ func (a *action) runRemote(ctx context.Context, client *rexec.Client) {
 		a.res = res
 	}()
 	ec, err := client.NewContext(ctx, cmd, opts, a.oe)
+	a.execContext = ec // Why wasn't this done here???
 	if err != nil {
 		res, meta = command.NewLocalErrorResult(err), &command.Metadata{}
 		return
@@ -262,7 +263,7 @@ const (
 
 type raceResult struct {
 	res *command.Result
-	oe  outerr.OutErr
+	oe  *outerr.RecordingOutErr
 	t   resultType
 }
 

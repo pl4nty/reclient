@@ -163,6 +163,11 @@ go_deps.gazelle_override(
     directives = googleapis_resolve,
     path = "github.com/bazelbuild/remote-apis-sdks",
 )
+go_deps.archive_override(
+    path = "github.com/bazelbuild/remote-apis-sdks",
+    strip_prefix = "remote-apis-sdks-4bc1d5b7a570783b86143e2b25b04a45fc31a592",
+    urls = ["https://github.com/pl4nty/remote-apis-sdks/archive/4bc1d5b7a570783b86143e2b25b04a45fc31a592.zip"],
+)
 
 # TODO(b/303263153): Remove after remote-apis migrates to bzlmod
 go_deps.gazelle_override(
